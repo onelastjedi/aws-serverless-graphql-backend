@@ -1,0 +1,111 @@
+# Serverless.yml Reference
+# https://serverless.com/framework/docs/providers/aws/guide/serverless.yml/
+
+# Switch between credentials
+# https://serverless.com/framework/docs/providers/aws/guide/credentials/
+
+service: test-api
+
+# Use the serverless-webpack plugin to transpile ES6
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-jest-plugin
+
+# Enable auto-packing of external modules
+custom:
+  webpackIncludeModules: true
+  jest:
+    collectCoverage: true
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - cognito-idp:*
+      Resource: arn:aws:cognito-idp:*:*:*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:GetObject
+        - s3:GetObjectAcl
+      Resource: arn:aws:s3:::app-dhc-uploads*
+    - Effect: Allow
+      Action:
+        - sns:publish
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource: "*"
+
+functions:
+  auth:
+    handler: src/auth.handler
+    events:
+      - http:
+          path: auth
+          method: post
+          cors: true
+    environment:
+      UserPoolId: us-west-2_YqSHjpOxw
+      ClientId: 65v4bpamvgvb8u7nkhi5bj4sr0
+      # UserPoolId: us-west-2_kRotcGpbE
+      # ClientId: 2p4ktdd3rq31k5isvj66atb34c
+
+  graphql:
+    handler: src/graphql.handler
+    events:
+      - http:
+          path: graphQL
+          method: post
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-west-2:030128215988:userpool/us-west-2_kRotcGpbE
+    environment:
+      Region: us-west-2
+      UserPoolId: us-west-2_kRotcGpbE
+      ClientId: 2p4ktdd3rq31k5isvj66atb34c
+      ArangoDBName: app-0-1
+      ArangoURL: 52.25.176.68:8529
+      ArangoUser: dhc
+      ArangoPW: wwGeoxP1In0fF9lpuj3sCXR4
+      Bucket: app-dhc-uploads
+
+  triggers:
+    handler: src/auth-triggers.handler
+    environment:
+      AppUrl: https://pearsall.dataharmonix.co/
+      ChangePasswordRoute: change
+      ResetPasswordRoute: reset
+      UserPoolId: us-west-2_kRotcGpbE
+
+  define-auth-challenge:
+    handler: src/define-auth-challenge.handler
+
+  create-auth-challenge:
+    handler: src/create-auth-challenge.handler
+    environment:
+      AppUrl: https://pearsall.dataharmonix.co/
+
+  verify-auth-challenge:
+    handler: src/verify-auth-challenge.handler
+
+  files:
+    handler: src/files.handler
+    events:
+      - http:
+          path: files
+          method: get
+          cors: true
+          authorizer:
+            arn: arn:aws:cognito-idp:us-west-2:030128215988:userpool/us-west-2_kRotcGpbE
+    environment:
+      Region: us-west-2
+      Bucket: app-dhc-uploads
+      UserPoolId: us-west-2_kRotcGpbE

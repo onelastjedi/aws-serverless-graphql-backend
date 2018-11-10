@@ -1,0 +1,10 @@
+{
+  "name": "test-api",
+  "version": "1.0.0",
+  "description": "Packaged externals for test-api",
+  "private": true,
+  "dependencies": {
+    "source-map-support": "^0.4.18",
+    "babel-runtime": "^6.26.0"
+  }
+}

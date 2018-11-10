@@ -1,0 +1,30 @@
+# package directories
+node_modules
+jspm_packages
+
+.DS_Store
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+test/unit/coverage
+test/e2e/reports
+selenium-debug.log
+screenshots
+
+# Test coverage directory
+coverage/
+
+# Temporary directories and files
+.tmp
+
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Serverless directories
+.serverless
