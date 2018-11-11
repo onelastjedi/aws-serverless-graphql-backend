@@ -34,7 +34,7 @@ provider:
         - s3:PutObjectAcl
         - s3:GetObject
         - s3:GetObjectAcl
-      Resource: arn:aws:s3:::app-dhc-uploads*
+      Resource: arn:aws:s3:::bucket*
     - Effect: Allow
       Action:
         - sns:publish
@@ -53,10 +53,8 @@ functions:
           method: post
           cors: true
     environment:
-      UserPoolId: us-west-2_YqSHjpOxw
-      ClientId: 65v4bpamvgvb8u7nkhi5bj4sr0
-      # UserPoolId: us-west-2_kRotcGpbE
-      # ClientId: 2p4ktdd3rq31k5isvj66atb34c
+      UserPoolId: # Pool ID
+      ClientId: # Client ID
 
   graphql:
     handler: src/graphql.handler
@@ -66,24 +64,24 @@ functions:
           method: post
           cors: true
           authorizer:
-            arn: arn:aws:cognito-idp:us-west-2:030128215988:userpool/us-west-2_kRotcGpbE
+            arn: # arn of authorizer (typically cognito user pool)
     environment:
-      Region: us-west-2
-      UserPoolId: us-west-2_kRotcGpbE
-      ClientId: 2p4ktdd3rq31k5isvj66atb34c
-      ArangoDBName: app-0-1
-      ArangoURL: 52.25.176.68:8529
-      ArangoUser: dhc
-      ArangoPW: wwGeoxP1In0fF9lpuj3sCXR4
-      Bucket: app-dhc-uploads
+      Region: # Region
+      UserPoolId: # UserPoolId
+      ClientId: # ClientId
+      ArangoDBName: # ArangoDBName 
+      ArangoURL: # ArangoURL
+      ArangoUser: # ArangoUser
+      ArangoPW: # ArangoPW
+      Bucket: # Bucket
 
   triggers:
     handler: src/auth-triggers.handler
     environment:
-      AppUrl: https://pearsall.dataharmonix.co/
-      ChangePasswordRoute: change
-      ResetPasswordRoute: reset
-      UserPoolId: us-west-2_kRotcGpbE
+      AppUrl: # AppUrl
+      ChangePasswordRoute: # ChangePasswordRoute
+      ResetPasswordRoute: # ResetPasswordRoute
+      UserPoolId: # UserPoolId
 
   define-auth-challenge:
     handler: src/define-auth-challenge.handler
@@ -91,7 +89,7 @@ functions:
   create-auth-challenge:
     handler: src/create-auth-challenge.handler
     environment:
-      AppUrl: https://pearsall.dataharmonix.co/
+      AppUrl: # AppUrl
 
   verify-auth-challenge:
     handler: src/verify-auth-challenge.handler
@@ -104,8 +102,8 @@ functions:
           method: get
           cors: true
           authorizer:
-            arn: arn:aws:cognito-idp:us-west-2:030128215988:userpool/us-west-2_kRotcGpbE
+            arn: arn of authorizer (typically cognito user pool)
     environment:
-      Region: us-west-2
-      Bucket: app-dhc-uploads
-      UserPoolId: us-west-2_kRotcGpbE
+      Region: # Region
+      Bucket: # Bucket
+      UserPoolId: # UserPoolId
